@@ -27,10 +27,7 @@ jobs:
         env:
           FL_CMD: ${{ inputs.cmd }}
         run: |
-          set +e
           bash -c "$FL_CMD"
-          code=$?
-          echo "FL_EXIT_CODE=$code"
           echo "FL_FINISHED=$(date -u +%s)"
 
       - name: final
