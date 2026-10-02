@@ -1,0 +1,37 @@
+name: freeloader-job
+
+on:
+  workflow_dispatch:
+    inputs:
+      job_id:
+        description: "Freeloader job id"
+        required: true
+        type: string
+      cmd:
+        description: "Shell command to run"
+        required: true
+        type: string
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: announce
+        run: |
+          echo "FL_JOB_ID=${{ inputs.job_id }}"
+          echo "FL_STARTED=$(date -u +%s)"
+
+      - name: run command
+        env:
+          FL_CMD: ${{ inputs.cmd }}
+        run: |
+          set +e
+          bash -c "$FL_CMD"
+          code=$?
+          echo "FL_EXIT_CODE=$code"
+          echo "FL_FINISHED=$(date -u +%s)"
+
+      - name: final
+        if: always()
+        run: echo "FL_DONE=1"
